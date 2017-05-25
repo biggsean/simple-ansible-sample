@@ -1,0 +1,99 @@
+---
+# tasks file for drupal
+- name: ensure apache is installed
+  package:
+    name: httpd
+    state: present
+  tags: [drupal]
+
+- name: ensure apache is configured
+  template:
+    src: drupal.conf.j2
+    dest: /etc/httpd/conf.d/{{ drupal_project }}.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart httpd
+  tags: [drupal]
+
+- name: ensure apache is running
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+  tags: [drupal]
+
+- name: ensure libsemanage-python is installed
+  package:
+    name: libsemanage-python
+    state: present
+  tags: [drupal]
+
+- name: ensure httpd_can_network_connect is set to true
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+  when: drupal_db_server != 'localhost'
+  tags: [drupal]
+
+- name: ensure php packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ drupal_php_packages }}"
+  notify:
+    - restart httpd
+  tags: [drupal]
+
+- name: ensure mariadb client is installed
+  package:
+    name: mariadb
+    state: present
+  tags: [drupal]
+
+- name: ensure drush is installed
+  get_url:
+    url: "{{ drupal_drush_url }}"
+    dest: "{{ drupal_drush_install_dest }}"
+    owner: root
+    group: root
+    mode: 0755
+  tags: [drupal]
+
+  # It appears shell is required for drush...
+- name: download and unarchive drupal
+  shell: "{{ drupal_drush_install_dest }} dl drupal-{{ drupal_version }} --drupal-project-rename={{ drupal_project }} --yes"
+  args:
+    creates: "{{ drupal_project_dir }}"
+    chdir: "{{ drupal_target_dir }}"
+  tags: [drupal]
+
+  # it appears the environment doesn't get passed to drush (seems like a drush issue)
+- name: ensure site is configured
+  shell: "{{ drupal_drush_install_dest }} site-install standard --db-url='mysql://{{ drupal_user }}:{{ drupal_user_password }}@{{ drupal_db_server }}/{{ drupal_dbname }}' --site-name={{ drupal_project }} --account-name={{ drupal_admin_user }} --account-pass={{ drupal_admin_password }} --yes"
+  args:
+    creates: "{{ drupal_project_dir }}/sites/default/settings.php"
+    chdir: "{{ drupal_project_dir }}"
+  no_log: yes
+  notify:
+    - restart httpd
+  tags: [drupal]
+
+- name: ensure permissions are appropriate
+  file:
+    dest: "{{ drupal_project_dir }}"
+    state: directory
+    recurse: yes
+    owner: apache
+    group: apache
+  tags: [drupal]
+
+- name: ensure selinux permissions are appropriate
+  file:
+    dest: "{{ drupal_project_dir }}"
+    state: directory
+    recurse: yes
+    setype: httpd_sys_rw_content_t
+  tags: [drupal]

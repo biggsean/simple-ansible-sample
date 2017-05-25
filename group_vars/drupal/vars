@@ -1,0 +1,17 @@
+---
+drupal_dbname: drupaldb
+drupal_user: drupaluser
+drupal_user_password: secret
+
+mysql_root_password: secret
+mysql_databases:
+  - name: "{{ drupal_dbname }}"
+mysql_users:
+  - name: "{{ drupal_user }}"
+    host: localhost
+    password: "{{ drupal_user_password }}"
+    priv: "{{ drupal_dbname }}.*:ALL"
+  - name: "{{ drupal_user }}"
+    host: '%'
+    password: "{{ drupal_user_password }}"
+    priv: "{{ drupal_dbname }}.*:ALL"

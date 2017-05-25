@@ -1,0 +1,16 @@
+---
+- hosts: drupal_db_master
+  gather_facts: yes
+  become: true
+
+  roles:
+    - mysql
+
+- hosts: drupal_fe
+  gather_facts: yes
+  become: true
+  vars:
+    drupal_db_server: "{{ hostvars[groups['drupal_db_master']|first]['ansible_eth0']['ipv4']['address'] }}"
+
+  roles:
+    - drupal

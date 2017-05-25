@@ -1,0 +1,6 @@
+---
+# handlers file for drupal
+- name: restart httpd
+  service:
+    name: httpd
+    state: restarted

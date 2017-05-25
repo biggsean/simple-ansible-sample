@@ -1,0 +1,28 @@
+---
+# defaults file for drupal
+drupal_dbname: drupaldb
+drupal_user: drupaluser
+drupal_user_password: drupal
+drupal_admin_user: admin
+drupal_admin_password: admin
+drupal_db_server: localhost
+
+drupal_version: 7.54
+drupal_project: drupal
+drupal_target_dir: /var/www/html
+drupal_project_dir: "{{ drupal_target_dir }}/{{ drupal_project }}"
+drupal_php_packages:
+  - php
+  - php-mysql
+  - php-gd
+  - php-ldap
+  - php-odbc
+  - php-pear
+  - php-xml
+  - php-xmlrpc
+  - php-mbstring
+  - php-snmp
+  - php-soap
+
+drupal_drush_url: 'http://files.drush.org/drush.phar'
+drupal_drush_install_dest: /usr/local/bin/drush
