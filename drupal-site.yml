@@ -1,16 +1,16 @@
 ---
-- hosts: managed_layer_drupal_be
+- hosts: _managed_layer_drupal_be
   gather_facts: yes
   become: true
 
   roles:
     - mysql
 
-- hosts: manabed_layer_drupal_fe
+- hosts: _managed_layer_drupal_fe
   gather_facts: yes
   become: true
   vars:
-    drupal_db_server: "{{ hostvars[groups['managed_layer_drupal_be']|first]['ansible_eth0']['ipv4']['address'] }}"
+    drupal_db_server: "{{ hostvars[groups['_managed_layer_drupal_be']|first]['ansible_eth0']['ipv4']['address'] }}"
 
   roles:
     - drupal
