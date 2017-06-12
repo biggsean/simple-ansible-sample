@@ -21,3 +21,4 @@ verifier:
   name: testinfra
   options:
     v: 1
+    sudo: True
