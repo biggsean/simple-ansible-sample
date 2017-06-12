@@ -24,7 +24,7 @@
     creates: "{{ mysql_log_error }}"
     warn: no
   tags: [mysql]
-    
+ 
 - name: ensure perms on error log file
   file:
     path: "{{ mysql_log_error }}"
@@ -40,7 +40,7 @@
     creates: "{{ mysql_slow_query_log_file }}"
     warn: no
   tags: [mysql]
-    
+
 - name: ensure perms on slow query log file
   file:
     path: "{{ mysql_slow_query_log_file }}"
