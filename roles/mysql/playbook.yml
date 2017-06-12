@@ -1,4 +1,13 @@
 ---
 - hosts: all
+  vars:
+    mysql_databases:
+      - name: mycoolsample
+    mysql_users:
+      - name: supercooluser
+        host: localhost
+        password: supercool
+        priv: mycoolsample.*:ALL
+
   roles:
     - role: mysql
