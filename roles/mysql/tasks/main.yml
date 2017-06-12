@@ -24,7 +24,7 @@
     creates: "{{ mysql_log_error }}"
     warn: no
   tags: [mysql]
- 
+
 - name: ensure perms on error log file
   file:
     path: "{{ mysql_log_error }}"
