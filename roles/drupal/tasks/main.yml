@@ -68,7 +68,9 @@
   args:
     creates: "{{ drupal_project_dir }}"
     chdir: "{{ drupal_target_dir }}"
-  tags: [drupal]
+  tags:
+    - drupal
+    - skip_ansible_lint
 
   # it appears the environment doesn't get passed to drush (seems like a drush issue)
 - name: ensure site is configured
@@ -79,7 +81,9 @@
   no_log: yes
   notify:
     - restart httpd
-  tags: [drupal]
+  tags:
+    - drupal
+    - skip_ansible_lint
 
 - name: ensure permissions are appropriate
   file:
