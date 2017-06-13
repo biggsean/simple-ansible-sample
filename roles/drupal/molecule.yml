@@ -1,0 +1,28 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+vagrant:
+  platforms:
+    - name: bento/centos-7.3
+      box: bento/centos-7.3
+  providers:
+    - name: virtualbox
+      type: virtualbox
+      options:
+        memory: 512
+        cpus: 2
+  instances:
+    - name: drupal
+      ansible_groups:
+        - group1
+provisioner:
+  name: ansible
+  config_options:
+    roles_path: ../../roles
+verifier:
+  name: testinfra
+  options:
+    v: 1
+    sudo: True
